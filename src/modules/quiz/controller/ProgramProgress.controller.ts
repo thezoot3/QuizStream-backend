@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { ProgramProgressService } from '../data/programProgress/ProgramProgress.provider';
 import { UpdateProgramProgressDto } from '../data/programProgress/ProgramProgress.dto';
 
@@ -34,5 +34,22 @@ export class ProgramProgressController {
   @Delete(':id')
   async remove(@Param('id') id: string) {
     return this.programProgressService.remove(id);
+  }
+
+  @Post()
+  async create(@Body() data: { program: string; joinCode: string }) {
+    return this.programProgressService.create({
+      users: [],
+      currentQuizIndex: 0,
+      currentQuiz: '',
+      currentSubVideo: 0,
+      isStarted: false,
+      isEnd: false,
+      isSubmittingQuestion: false,
+      isOnSubVideo: false,
+      currentVideoTimestamp: 0,
+      videoPlayerSocketId: '',
+      ...data
+    });
   }
 }
