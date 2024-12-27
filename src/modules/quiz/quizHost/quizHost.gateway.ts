@@ -6,6 +6,7 @@ import { ProgramProgressService } from '../data/programProgress/ProgramProgress.
 import { QuizVideoPlayerService } from '../quizVideoPlayer/quizVideoPlayer.provider';
 import { QuizClientService } from '../quizClient/quizClient.provider';
 import { QuestionResponseService } from '../data/questionResponse/QuestionResponse.provider';
+import { ProgramService } from '../data/program/Program.provider';
 
 @WebSocketGateway({
   namespace: 'quizHost',
@@ -20,6 +21,7 @@ export class QuizHostGateway {
     private programProgressService: ProgramProgressService,
     private quizVideoPlayerService: QuizVideoPlayerService,
     private quizResponseService: QuestionResponseService,
+    private programService: ProgramService,
     @Inject(forwardRef(() => QuizClientService)) private quizClientService: QuizClientService
   ) {}
   private logger: Logger = new Logger('QuizHostGateway');
@@ -48,6 +50,7 @@ export class QuizHostGateway {
     if (progress.isStarted) {
       return;
     }
+    const program = await this.programService.findOne(progress.program);
     const newProgress = await this.programProgressService.update(progress._id.toString(), {
       isStarted: true,
       currentVideoTimestamp: 0,
@@ -55,6 +58,7 @@ export class QuizHostGateway {
       isSubmittingQuestion: false,
       currentSubVideo: undefined,
       currentQuizIndex: 0,
+      currentQuiz: program.quizList[0],
       isOnSubVideo: false
     });
     for (const a of await this.quizResponseService.findByProgramProgressId(payload.programProgressId)) {
