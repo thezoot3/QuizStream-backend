@@ -114,7 +114,7 @@ export class QuizVideoPlayerGateway implements OnGatewayInit, OnGatewayConnectio
     const progress = await this.programProgressService.findOne(progressId);
     const program = await this.programService.findOne(progress.program);
     const quiz = await this.quizService.findOne(progress.currentQuiz.toString());
-    if (quiz?.subVideoByOptions && quiz.subVideoByOptions.length > 0) {
+    if (quiz?.subVideoByOptions && quiz.subVideoByOptions.filter((item) => item !== null).length > 0) {
       const questionResponses = (await this.questionResponseService.findByQuizId(quiz._id.toString())).filter(
         (i) => i.programProgressId === progressId
       );

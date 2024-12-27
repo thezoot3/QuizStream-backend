@@ -25,7 +25,8 @@ export class ProgramProgressService {
   }
 
   async findByJoinCode(joinCode: string): Promise<ProgramProgress> {
-    return this.programProgressModel.findOne({ joinCode }).exec();
+    const result = await this.programProgressModel.find({ joinCode }).exec();
+    return result.find((i) => !i.isEnd);
   }
 
   async usersByProgress(id: string): Promise<User[]> {

@@ -33,7 +33,7 @@ export class Quiz {
   points: number;
 
   @Prop({ required: true })
-  subVideoByOptions: ({ duration: number; videoId: string } | null)[];
+  subVideoByOptions: Array<{ duration: number; videoId: string } | null>;
 }
 
 export const QuizSchema = SchemaFactory.createForClass(Quiz);
