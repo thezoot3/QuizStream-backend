@@ -64,7 +64,7 @@ export class QuizHostGateway {
     for (const a of await this.quizResponseService.findByProgramProgressId(payload.programProgressId)) {
       await this.quizResponseService.remove(a._id.toString());
     }
-    await this.programProgressService.setQuizByIndex(progress._id.toString(), 0);
+    console.log(newProgress);
     await this.quizVideoPlayerService.startVideo(progress._id.toString());
     await this.quizClientService.startProgram(progress._id.toString());
     client.emit('programStarted');
@@ -97,7 +97,7 @@ export class QuizHostGateway {
     await this.quizClientService.quitUser(payload.programProgressId, payload.userId);
     await this.userUpdateCue(payload.programProgressId);
   }
-
+  /*
   @SubscribeMessage('pause')
   async pauseHandler(client: Socket, payload: { programProgressId: string }) {
     await this.quizVideoPlayerService.pauseVideo(payload.programProgressId);
@@ -141,7 +141,7 @@ export class QuizHostGateway {
       await this.progressUpdateCue(payload.programProgressId);
       await this.responseUpdateCue(payload.programProgressId);
     }
-  }
+  }*/
 
   async progressUpdateCue(programProgressId: string) {
     return this.server.to(programProgressId).emit('progressUpdateCue');

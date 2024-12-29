@@ -37,9 +37,6 @@ export class ProgramProgress {
   @Prop({ required: true, default: false })
   isEnd: boolean;
 
-  @Prop({ required: true, default: false })
-  isPaused: boolean;
-
   @Prop()
   currentSubVideo: number;
 

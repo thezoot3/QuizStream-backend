@@ -30,6 +30,7 @@ export class QuizVideoPlayerService {
   async startVideo(programProgressId: string) {
     const progress = await this.programProgressService.findOne(programProgressId);
     const quiz = await this.quizService.findOne(progress.currentQuiz);
+    console.log(quiz.videoId);
     await this.quizVideoPlayerGateway.startVideo(programProgressId, quiz.videoId);
   }
   async setTimestamp(programProgressId: string, timestamp: number) {
@@ -39,16 +40,6 @@ export class QuizVideoPlayerService {
   async endProgram(programProgressId: string) {
     await this.programProgressService.update(programProgressId, { isEnd: true });
     await this.quizVideoPlayerGateway.endProgram(programProgressId);
-  }
-
-  async pauseVideo(programProgressId: string) {
-    const progress = await this.programProgressService.findOne(programProgressId);
-    this.quizVideoPlayerGateway.server.emit(progress.videoPlayerSocketId, 'pause');
-  }
-
-  async unpauseVideo(programProgressId: string) {
-    const progress = await this.programProgressService.findOne(programProgressId);
-    this.quizVideoPlayerGateway.server.emit(progress.videoPlayerSocketId, 'unpause');
   }
   //TODO make QuizVideoPlayerGateway interface to outside
 }
