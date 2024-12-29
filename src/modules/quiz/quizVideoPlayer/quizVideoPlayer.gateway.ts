@@ -33,7 +33,6 @@ export class QuizVideoPlayerGateway implements OnGatewayInit, OnGatewayConnectio
     private readonly programService: ProgramService,
     @Inject(forwardRef(() => QuizHostService)) private readonly quizHostService: QuizHostService
   ) {}
-  r;
   afterInit() {
     this.logger.log('WebSocket Initialized');
   }
