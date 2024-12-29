@@ -98,6 +98,51 @@ export class QuizHostGateway {
     await this.userUpdateCue(payload.programProgressId);
   }
 
+  @SubscribeMessage('pause')
+  async pauseHandler(client: Socket, payload: { programProgressId: string }) {
+    await this.quizVideoPlayerService.pauseVideo(payload.programProgressId);
+    await this.progressUpdateCue(payload.programProgressId);
+  }
+
+  @SubscribeMessage('unpause')
+  async unpauseHandler(client: Socket, payload: { programProgressId: string }) {
+    await this.quizVideoPlayerService.unpauseVideo(payload.programProgressId);
+    await this.progressUpdateCue(payload.programProgressId);
+  }
+
+  @SubscribeMessage('previousQuiz')
+  async previousQuizHandler(client: Socket, payload: { programProgressId: string }) {
+    const progress = await this.programProgressService.findOne(payload.programProgressId);
+    if (progress.currentQuizIndex > 0) {
+      const response =
+        (await this.quizResponseService.findByProgramAndQuizId(payload.programProgressId, progress.currentQuiz)) || [];
+      for (const i of response) {
+        await this.quizResponseService.remove(i._id.toString());
+      }
+      await this.programProgressService.setQuizByIndex(payload.programProgressId, progress.currentQuizIndex - 1);
+      await this.quizVideoPlayerService.startVideo(payload.programProgressId);
+      await this.progressUpdateCue(payload.programProgressId);
+      await this.responseUpdateCue(payload.programProgressId);
+    }
+  }
+
+  @SubscribeMessage('nextQuiz')
+  async nextQuizHandler(client: Socket, payload: { programProgressId: string }) {
+    const progress = await this.programProgressService.findOne(payload.programProgressId);
+    const program = await this.programService.findOne(payload.programProgressId);
+    if (progress.currentQuizIndex + 1 < program.quizList.length) {
+      const response =
+        (await this.quizResponseService.findByProgramAndQuizId(payload.programProgressId, progress.currentQuiz)) || [];
+      for (const i of response) {
+        await this.quizResponseService.remove(i._id.toString());
+      }
+      await this.programProgressService.setQuizByIndex(payload.programProgressId, progress.currentQuizIndex + 1);
+      await this.quizVideoPlayerService.startVideo(payload.programProgressId);
+      await this.progressUpdateCue(payload.programProgressId);
+      await this.responseUpdateCue(payload.programProgressId);
+    }
+  }
+
   async progressUpdateCue(programProgressId: string) {
     return this.server.to(programProgressId).emit('progressUpdateCue');
   }

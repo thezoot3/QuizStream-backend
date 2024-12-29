@@ -33,7 +33,7 @@ export class QuizVideoPlayerGateway implements OnGatewayInit, OnGatewayConnectio
     private readonly programService: ProgramService,
     @Inject(forwardRef(() => QuizHostService)) private readonly quizHostService: QuizHostService
   ) {}
-
+  r;
   afterInit() {
     this.logger.log('WebSocket Initialized');
   }
@@ -50,6 +50,11 @@ export class QuizVideoPlayerGateway implements OnGatewayInit, OnGatewayConnectio
   async handleJoin(client: Socket, payload: { programProgressId: string }) {
     await this.setVideoPlayerSocketId(payload.programProgressId, client.id);
     client.emit('joined');
+    const progress = await this.programProgressService.findOne(payload.programProgressId);
+    if (progress.isStarted && !progress.isEnd) {
+      const quiz = await this.quizService.findOne(progress.currentQuiz.toString());
+      await this.startVideo(payload.programProgressId, quiz.videoId);
+    }
   }
 
   @SubscribeMessage('videoTimestamp')

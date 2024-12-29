@@ -34,6 +34,9 @@ export class CreateProgramProgressDto {
 
   @IsBoolean()
   isOnSubVideo: boolean;
+
+  @IsBoolean()
+  isPaused: boolean;
 }
 
 export class UpdateProgramProgressDto extends PartialType(CreateProgramProgressDto) {}

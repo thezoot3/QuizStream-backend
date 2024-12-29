@@ -49,6 +49,7 @@ export class ProgramProgressController {
       isOnSubVideo: false,
       currentVideoTimestamp: 0,
       videoPlayerSocketId: '',
+      isPaused: false,
       ...data
     });
   }

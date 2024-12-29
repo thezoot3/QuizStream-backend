@@ -40,5 +40,15 @@ export class QuizVideoPlayerService {
     await this.programProgressService.update(programProgressId, { isEnd: true });
     await this.quizVideoPlayerGateway.endProgram(programProgressId);
   }
+
+  async pauseVideo(programProgressId: string) {
+    const progress = await this.programProgressService.findOne(programProgressId);
+    this.quizVideoPlayerGateway.server.emit(progress.videoPlayerSocketId, 'pause');
+  }
+
+  async unpauseVideo(programProgressId: string) {
+    const progress = await this.programProgressService.findOne(programProgressId);
+    this.quizVideoPlayerGateway.server.emit(progress.videoPlayerSocketId, 'unpause');
+  }
   //TODO make QuizVideoPlayerGateway interface to outside
 }
