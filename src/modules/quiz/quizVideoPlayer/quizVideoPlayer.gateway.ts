@@ -48,8 +48,10 @@ export class QuizVideoPlayerGateway implements OnGatewayInit, OnGatewayConnectio
   @SubscribeMessage('join')
   async handleJoin(client: Socket, payload: { programProgressId: string }) {
     await this.setVideoPlayerSocketId(payload.programProgressId, client.id);
+    client.join(client.id);
     client.emit('joined');
     const progress = await this.programProgressService.findOne(payload.programProgressId);
+    console.log(progress);
     if (progress.isStarted && !progress.isEnd) {
       const quiz = await this.quizService.findOne(progress.currentQuiz.toString());
       await this.startVideo(payload.programProgressId, quiz.videoId);

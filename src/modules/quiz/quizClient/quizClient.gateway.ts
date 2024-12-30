@@ -57,6 +57,7 @@ export class QuizClientGateway implements OnGatewayInit, OnGatewayConnection, On
       await this.programProgressService.addJoinedUser(payload.programProgressId, exist._id.toString());
       await this.quizHostService.userUpdateCue(payload.programProgressId);
       client.join(payload.programProgressId);
+      client.join(client.id);
       client.emit('joined', { userId: exist._id.toString() });
       return;
     }

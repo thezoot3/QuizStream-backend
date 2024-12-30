@@ -41,6 +41,7 @@ export class QuizHostGateway {
   @SubscribeMessage('join')
   async handleJoin(client: Socket, payload: { programProgressId: string }) {
     client.join(payload.programProgressId);
+    client.join(client.id);
     client.emit('joined');
   }
 
