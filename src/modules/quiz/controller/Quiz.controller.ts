@@ -10,8 +10,7 @@ interface CreateQuizBody {
   submittingDuration: number;
   videoDuration: number;
   options: string[];
-  correctAnswer: number;
-  points: number;
+  points: number[];
   subVideoByOptions: ({ duration: number; videoId: string } | null)[];
 }
 
@@ -44,8 +43,7 @@ export class QuizController {
     return this.quizService.create({
       ...createQuizDto,
       options: createQuizDto.options || [],
-      correctAnswer: createQuizDto.correctAnswer || 0,
-      points: createQuizDto.points || 0,
+      points: createQuizDto.points || Array(createQuizDto.options.length).fill(0),
       subVideoByOptions: createQuizDto.subVideoByOptions || []
     });
   }

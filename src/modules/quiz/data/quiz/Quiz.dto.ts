@@ -21,13 +21,10 @@ export class CreateQuizDto {
   options: string[];
 
   @IsNumber()
-  correctAnswer: number;
-
-  @IsNumber()
   submittingDuration: number;
 
-  @IsNumber()
-  points: number;
+  @IsArray()
+  points: number[];
 
   @IsArray()
   subVideoByOptions: ({ duration: number; videoId: string } | null)[];

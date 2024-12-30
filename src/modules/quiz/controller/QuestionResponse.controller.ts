@@ -26,6 +26,11 @@ export class QuestionResponseController {
     return this.questionResponseService.findByProgramAndQuizId(id, quizId);
   }
 
+  @Get('/user/:id')
+  async findByUser(@Param('id') id: string) {
+    return this.questionResponseService.findByUserId(id);
+  }
+
   @Put(':id')
   async update(@Param('id') id: string, @Body() updateQuestionResponseDto: UpdateQuestionResponseDto) {
     return this.questionResponseService.update(id, updateQuestionResponseDto);

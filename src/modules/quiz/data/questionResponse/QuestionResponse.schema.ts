@@ -22,9 +22,6 @@ export class QuestionResponse {
   submittedAnswer: number;
 
   @Prop({ required: true })
-  isCorrect: boolean;
-
-  @Prop({ required: true })
   earnedPoints: number;
 
   @Prop({ required: true })
