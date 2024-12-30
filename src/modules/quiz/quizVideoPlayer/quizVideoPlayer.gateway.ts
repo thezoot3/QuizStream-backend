@@ -65,10 +65,11 @@ export class QuizVideoPlayerGateway implements OnGatewayInit, OnGatewayConnectio
     });
     const quizId = await this.programProgressService.getCurrentQuizId(progress._id.toString());
     const quiz = await this.quizService.findOne(quizId);
-    /*
+
     //preload next video
     if (quiz.subVideoByOptions && quiz.subVideoByOptions.some((i) => i)) {
-      //check there is a sub video
+      // if subvideo
+      // if current subvideo is ending
       if (quiz.subVideoByOptions[progress.currentSubVideo].duration - payload.timestamp < 3) {
         if (progress.currentSubVideo + 1 < quiz.subVideoByOptions.length) {
           //send next Sub Video Preload
@@ -82,8 +83,7 @@ export class QuizVideoPlayerGateway implements OnGatewayInit, OnGatewayConnectio
           }
         }
       }
-    }
-    if (quiz.videoDuration - payload.timestamp < 3) {
+    } else if (quiz.videoDuration - payload.timestamp < 3) {
       //no subvideo
       const program = await this.programService.findOne(progress.program);
       if (progress.currentQuizIndex + 1 < program.quizList.length) {
@@ -91,7 +91,7 @@ export class QuizVideoPlayerGateway implements OnGatewayInit, OnGatewayConnectio
         client.emit('preloadNextVideo', { videoId: nextQuiz.videoId });
       }
     }
-    */
+
     console.log(progress.isSubmittingQuestion, quiz.questionTriggerTime, payload.timestamp);
     if (progress.isSubmittingQuestion) {
       //start and stop submitting question
