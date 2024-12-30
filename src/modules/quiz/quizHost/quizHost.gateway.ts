@@ -41,7 +41,6 @@ export class QuizHostGateway {
   @SubscribeMessage('join')
   async handleJoin(client: Socket, payload: { programProgressId: string }) {
     client.join(payload.programProgressId);
-    client.join(client.id);
     client.emit('joined');
   }
 
@@ -98,18 +97,6 @@ export class QuizHostGateway {
     await this.quizClientService.quitUser(payload.programProgressId, payload.userId);
     await this.progressUpdateCue(payload.programProgressId);
   }
-  /*
-  @SubscribeMessage('pause')
-  async pauseHandler(client: Socket, payload: { programProgressId: string }) {
-    await this.quizVideoPlayerService.pauseVideo(payload.programProgressId);
-    await this.progressUpdateCue(payload.programProgressId);
-  }
-
-  @SubscribeMessage('unpause')
-  async unpauseHandler(client: Socket, payload: { programProgressId: string }) {
-    await this.quizVideoPlayerService.unpauseVideo(payload.programProgressId);
-    await this.progressUpdateCue(payload.programProgressId);
-  }
 
   @SubscribeMessage('previousQuiz')
   async previousQuizHandler(client: Socket, payload: { programProgressId: string }) {
@@ -121,6 +108,12 @@ export class QuizHostGateway {
         await this.quizResponseService.remove(i._id.toString());
       }
       await this.programProgressService.setQuizByIndex(payload.programProgressId, progress.currentQuizIndex - 1);
+      await this.programProgressService.update(payload.programProgressId, {
+        isSubmittingQuestion: false,
+        currentVideoTimestamp: 0,
+        currentSubVideo: undefined,
+        isOnSubVideo: false
+      });
       await this.quizVideoPlayerService.startVideo(payload.programProgressId);
       await this.progressUpdateCue(payload.programProgressId);
     }
@@ -137,10 +130,15 @@ export class QuizHostGateway {
         await this.quizResponseService.remove(i._id.toString());
       }
       await this.programProgressService.setQuizByIndex(payload.programProgressId, progress.currentQuizIndex + 1);
+      await this.programProgressService.update(payload.programProgressId, {
+        isSubmittingQuestion: false,
+        currentSubVideo: undefined,
+        isOnSubVideo: false
+      });
       await this.quizVideoPlayerService.startVideo(payload.programProgressId);
       await this.progressUpdateCue(payload.programProgressId);
     }
-  }*/
+  }
 
   async progressUpdateCue(programProgressId: string) {
     return this.server.to(programProgressId).emit('progressUpdateCue');
