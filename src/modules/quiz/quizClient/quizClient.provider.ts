@@ -17,8 +17,8 @@ export class QuizClientService {
     return this.quizClientGateway.endQuestionSubmitting(programProgressId);
   }
 
-  async sendQuestion(programProgressId: string, question: any) {
-    return this.quizClientGateway.sendQuestion(programProgressId, question);
+  async sendQuestion(programProgressId: string, quiz: any) {
+    return this.quizClientGateway.sendQuestion(programProgressId, quiz);
   }
 
   async broadcastTimeLeft(programProgressId: string, timeLeft: number) {

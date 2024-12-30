@@ -128,15 +128,15 @@ export class QuizVideoPlayerGateway implements OnGatewayInit, OnGatewayConnectio
       const sortedAnswers = countByAnswer.map((_, i) => i).sort((a, b) => countByAnswer[b] - countByAnswer[a]);
       if (progress.isOnSubVideo && progress.currentSubVideo + 1 < quiz.subVideoByOptions.length) {
         const subVideo = quiz.subVideoByOptions[sortedAnswers[progress.currentSubVideo + 1]];
+        await this.startVideo(payload.programProgressId, subVideo.videoId);
         await this.programProgressService.update(progress._id.toString(), {
           currentSubVideo: progress.currentSubVideo + 1
         });
-        await this.startVideo(payload.programProgressId, subVideo.videoId);
         await this.quizHostService.progressUpdateCue(progress._id.toString());
         return;
       } else if (!progress.isOnSubVideo) {
-        await this.programProgressService.update(progress._id.toString(), { currentSubVideo: 0, isOnSubVideo: true });
         await this.startVideo(payload.programProgressId, quiz.subVideoByOptions[sortedAnswers[0]].videoId);
+        await this.programProgressService.update(progress._id.toString(), { currentSubVideo: 0, isOnSubVideo: true });
         await this.quizHostService.progressUpdateCue(progress._id.toString());
         return;
       }
@@ -148,18 +148,15 @@ export class QuizVideoPlayerGateway implements OnGatewayInit, OnGatewayConnectio
       await this.quizHostService.progressUpdateCue(progress._id.toString());
       return;
     }
+    const newQuiz = await this.quizService.findOne(program.quizList[progress.currentQuizIndex + 1]);
+    await this.startVideo(payload.programProgressId, newQuiz.videoId);
     await this.programProgressService.update(progressId, {
       currentSubVideo: 0,
       isOnSubVideo: false,
       isSubmittingQuestion: false,
       currentVideoTimestamp: 0
     });
-    const newProgramProgress = await this.programProgressService.setQuizByIndex(
-      progressId,
-      progress.currentQuizIndex + 1
-    );
-    const newQuiz = await this.quizService.findOne(newProgramProgress.currentQuiz);
-    await this.startVideo(payload.programProgressId, newQuiz.videoId);
+    await this.programProgressService.setQuizByIndex(progressId, progress.currentQuizIndex + 1);
     await this.quizHostService.progressUpdateCue(progress._id.toString());
   }
 
