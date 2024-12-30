@@ -44,7 +44,7 @@ export class QuizClientGateway implements OnGatewayInit, OnGatewayConnection, On
     const user = await this.userService.findBySocketId(client.id);
     if (user) {
       await this.programProgressService.removeJoinedUser(user.joinedProgram, user._id.toString());
-      await this.quizHostService.userUpdateCue(user.joinedProgram);
+      await this.quizHostService.progressUpdateCue(user.joinedProgram);
     }
   }
 
@@ -55,7 +55,7 @@ export class QuizClientGateway implements OnGatewayInit, OnGatewayConnection, On
       const exist = await this.userService.findOne(payload.userId);
       await this.userService.update(exist._id.toString(), { socketId: client.id });
       await this.programProgressService.addJoinedUser(payload.programProgressId, exist._id.toString());
-      await this.quizHostService.userUpdateCue(payload.programProgressId);
+      await this.quizHostService.progressUpdateCue(payload.programProgressId);
       client.join(payload.programProgressId);
       client.join(client.id);
       client.emit('joined', { userId: exist._id.toString() });
@@ -69,7 +69,6 @@ export class QuizClientGateway implements OnGatewayInit, OnGatewayConnection, On
     });
     await this.programProgressService.addJoinedUser(payload.programProgressId, user._id.toString());
     await this.quizHostService.progressUpdateCue(payload.programProgressId);
-    await this.quizHostService.userUpdateCue(payload.programProgressId);
     client.join(payload.programProgressId);
     client.emit('joined', { userId: user._id.toString() });
   }
@@ -84,7 +83,7 @@ export class QuizClientGateway implements OnGatewayInit, OnGatewayConnection, On
       console.log(payload.answer);
       await this.questionResponseService.submitResponse(programPgId, user._id.toString(), quizId, payload.answer);
     }
-    await this.quizHostService.responseUpdateCue(programPgId);
+    await this.quizHostService.progressUpdateCue(programPgId);
   }
 
   async startProgram(programProgressId: string) {

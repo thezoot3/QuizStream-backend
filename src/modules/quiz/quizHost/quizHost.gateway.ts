@@ -96,7 +96,7 @@ export class QuizHostGateway {
   async handleQuitUser(client: Socket, payload: { programProgressId: string; userId: string }) {
     await this.programProgressService.removeJoinedUser(payload.programProgressId, payload.userId);
     await this.quizClientService.quitUser(payload.programProgressId, payload.userId);
-    await this.userUpdateCue(payload.programProgressId);
+    await this.progressUpdateCue(payload.programProgressId);
   }
   /*
   @SubscribeMessage('pause')
@@ -123,7 +123,6 @@ export class QuizHostGateway {
       await this.programProgressService.setQuizByIndex(payload.programProgressId, progress.currentQuizIndex - 1);
       await this.quizVideoPlayerService.startVideo(payload.programProgressId);
       await this.progressUpdateCue(payload.programProgressId);
-      await this.responseUpdateCue(payload.programProgressId);
     }
   }
 
@@ -140,19 +139,10 @@ export class QuizHostGateway {
       await this.programProgressService.setQuizByIndex(payload.programProgressId, progress.currentQuizIndex + 1);
       await this.quizVideoPlayerService.startVideo(payload.programProgressId);
       await this.progressUpdateCue(payload.programProgressId);
-      await this.responseUpdateCue(payload.programProgressId);
     }
   }*/
 
   async progressUpdateCue(programProgressId: string) {
     return this.server.to(programProgressId).emit('progressUpdateCue');
-  }
-
-  async responseUpdateCue(programProgressId: string) {
-    return this.server.to(programProgressId).emit('responseUpdateCue');
-  }
-
-  async userUpdateCue(programProgressId: string) {
-    return this.server.to(programProgressId).emit('userUpdateCue');
   }
 }
