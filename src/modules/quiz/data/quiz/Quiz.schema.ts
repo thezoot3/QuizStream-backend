@@ -24,13 +24,10 @@ export class Quiz {
   options: string[];
 
   @Prop({ required: true })
-  correctAnswer: number;
-
-  @Prop({ required: true })
   submittingDuration: number;
 
-  @Prop({ required: true, default: 1 })
-  points: number;
+  @Prop({ required: true })
+  points: number[];
 
   @Prop({ required: true })
   subVideoByOptions: Array<{ duration: number; videoId: string } | null>;

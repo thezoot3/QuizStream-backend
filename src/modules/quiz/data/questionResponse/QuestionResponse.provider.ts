@@ -67,14 +67,12 @@ export class QuestionResponseService {
       userId,
       quizId,
       submittedAnswer,
-      isCorrect: quiz.correctAnswer == submittedAnswer,
-      earnedPoints: quiz.correctAnswer == submittedAnswer ? quiz.points : 0,
+      earnedPoints: quiz.points[submittedAnswer],
       answeredAt: new Date()
     });
-    if (quiz.correctAnswer == submittedAnswer) {
-      console.log('correct!!');
+    if (quiz.points[submittedAnswer] > 0) {
       const user = await this.userService.findOne(userId);
-      await this.userService.update(userId, { earnedPoints: user.earnedPoints + quiz.points });
+      await this.userService.update(userId, { earnedPoints: user.earnedPoints + quiz.points[submittedAnswer] });
     }
     return response;
   }

@@ -1,5 +1,5 @@
 import { PartialType } from '@nestjs/swagger';
-import { IsBoolean, IsDate, IsNumber, IsString } from 'class-validator';
+import { IsDate, IsNumber, IsString } from 'class-validator';
 
 export class CreateQuestionResponseDto {
   @IsString()
@@ -13,9 +13,6 @@ export class CreateQuestionResponseDto {
 
   @IsNumber()
   readonly submittedAnswer: number;
-
-  @IsBoolean()
-  readonly isCorrect: boolean;
 
   @IsNumber()
   readonly earnedPoints: number;
