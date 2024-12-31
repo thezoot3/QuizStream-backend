@@ -122,7 +122,7 @@ export class QuizHostGateway {
   @SubscribeMessage('nextQuiz')
   async nextQuizHandler(client: Socket, payload: { programProgressId: string }) {
     const progress = await this.programProgressService.findOne(payload.programProgressId);
-    const program = await this.programService.findOne(payload.programProgressId);
+    const program = await this.programService.findOne(progress.program);
     if (progress.currentQuizIndex + 1 < program.quizList.length) {
       const response =
         (await this.quizResponseService.findByProgramAndQuizId(payload.programProgressId, progress.currentQuiz)) || [];
