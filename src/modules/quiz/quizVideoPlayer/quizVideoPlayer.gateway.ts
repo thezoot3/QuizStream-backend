@@ -80,7 +80,14 @@ export class QuizVideoPlayerGateway implements OnGatewayInit, OnGatewayConnectio
           const countByAnswer = new Array(quiz.options.length).fill(0).map((_, i) => {
             return questionResponses.filter((j) => j.submittedAnswer === i).length;
           });
-          const sortedAnswers = countByAnswer.map((_, i) => i).sort((a, b) => countByAnswer[b] - countByAnswer[a]);
+          let sortedAnswers = countByAnswer.map((_, i) => i).sort((a, b) => countByAnswer[b] - countByAnswer[a]);
+          if (questionResponses.length === 0) {
+            const arr = Array.from({ length: quiz.options.length }).fill(0);
+            arr.map((_, i) => {
+              return i;
+            });
+            sortedAnswers = arr as number[];
+          }
           if (!progress.isOnSubVideo) {
             client.emit('preloadNextVideo', { videoId: quiz.subVideoByOptions[sortedAnswers[0]].videoId });
           } else {
