@@ -19,7 +19,7 @@ export class QuestionResponse {
   @Prop({
     required: true
   })
-  submittedAnswer: number;
+  submittedAnswer: string;
 
   @Prop({ required: true })
   earnedPoints: number;

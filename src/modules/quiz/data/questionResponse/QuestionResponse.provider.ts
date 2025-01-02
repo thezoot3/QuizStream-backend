@@ -60,7 +60,7 @@ export class QuestionResponseService {
     programProgressId: string,
     userId: string,
     quizId: string,
-    submittedAnswer: number
+    submittedAnswer: number | string
   ): Promise<QuestionResponse> {
     if (await this.questionResponseModel.findOne({ userId, quizId })) {
       await this.questionResponseModel.deleteOne({ userId, quizId });
@@ -71,8 +71,8 @@ export class QuestionResponseService {
         programProgressId,
         userId,
         quizId,
-        submittedAnswer,
-        earnedPoints: quiz.options[0].split(',').includes(submittedAnswer.toString()) ? quiz.points[0] : 0,
+        submittedAnswer: submittedAnswer as string,
+        earnedPoints: quiz.options[0].split(',').includes(submittedAnswer as string) ? quiz.points[0] : 0,
         answeredAt: new Date()
       });
       if (quiz.options[0].split(',').includes(submittedAnswer.toString())) {
@@ -85,7 +85,7 @@ export class QuestionResponseService {
       programProgressId,
       userId,
       quizId,
-      submittedAnswer,
+      submittedAnswer: submittedAnswer.toString(),
       earnedPoints: quiz.points[submittedAnswer],
       answeredAt: new Date()
     });

@@ -11,8 +11,8 @@ export class CreateQuestionResponseDto {
   @IsString()
   readonly quizId: string;
 
-  @IsNumber()
-  readonly submittedAnswer: number;
+  @IsString()
+  readonly submittedAnswer: string;
 
   @IsNumber()
   readonly earnedPoints: number;
