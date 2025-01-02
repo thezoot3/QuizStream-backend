@@ -52,8 +52,8 @@ export class QuestionResponseService {
     return this.questionResponseModel.find({ programProgressId, quizId });
   }
 
-  async findByQuizAndUserId(quizId: string, userId: string): Promise<QuestionResponse> {
-    return this.questionResponseModel.findOne({ quizId, userId });
+  async findByQuizAndUserId(quizId: string, userId: string): Promise<QuestionResponse[]> {
+    return this.questionResponseModel.find({ quizId, userId });
   }
 
   async submitResponse(
