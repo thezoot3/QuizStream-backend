@@ -121,8 +121,9 @@ export class QuizVideoPlayerGateway implements OnGatewayInit, OnGatewayConnectio
     const program = await this.programService.findOne(progress.program);
     const quiz = await this.quizService.findOne(progress.currentQuiz.toString());
     if (quiz?.subVideoByOptions && quiz.subVideoByOptions.filter((item) => item !== null).length > 0) {
-      const questionResponses = (await this.questionResponseService.findByQuizId(quiz._id.toString())).filter(
-        (i) => i.programProgressId === progressId
+      const questionResponses = await this.questionResponseService.findByProgramAndQuizId(
+        progressId,
+        quiz._id.toString()
       );
       const countByAnswer = new Array(quiz.options.length).fill(0).map((_, i) => {
         return questionResponses.filter((j) => j.submittedAnswer === i).length;
@@ -135,6 +136,7 @@ export class QuizVideoPlayerGateway implements OnGatewayInit, OnGatewayConnectio
         });
         sortedAnswers = arr as number[];
       }
+      console.log(sortedAnswers);
       if (progress.isOnSubVideo && progress.currentSubVideo + 1 < quiz.subVideoByOptions.length) {
         const subVideo = quiz.subVideoByOptions[sortedAnswers[progress.currentSubVideo + 1]];
         await this.startVideo(payload.programProgressId, subVideo.videoId);
