@@ -144,7 +144,7 @@ export class QuizVideoPlayerGateway implements OnGatewayInit, OnGatewayConnectio
       });
       let sortedAnswers = countByAnswer.map((_, i) => i).sort((a, b) => countByAnswer[b] - countByAnswer[a]);
       if (questionResponses.length === 0) {
-        const arr = Array.from({ length: quiz.options.length });
+        const arr = Array.from({ length: quiz.options.length }).fill(0);
         arr.map((_, i) => {
           return i;
         });
