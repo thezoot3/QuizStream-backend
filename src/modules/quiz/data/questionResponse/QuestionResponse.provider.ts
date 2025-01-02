@@ -66,6 +66,21 @@ export class QuestionResponseService {
       await this.questionResponseModel.deleteOne({ userId, quizId });
     }
     const quiz = await this.quizService.findOne(quizId);
+    if (quiz.options.length < 2) {
+      const response = await this.create({
+        programProgressId,
+        userId,
+        quizId,
+        submittedAnswer,
+        earnedPoints: quiz.options[0].split(',').includes(submittedAnswer.toString()) ? quiz.points[0] : 0,
+        answeredAt: new Date()
+      });
+      if (quiz.options[0].split(',').includes(submittedAnswer.toString())) {
+        const user = await this.userService.findOne(userId);
+        await this.userService.update(userId, { earnedPoints: user.earnedPoints + quiz.points[0] });
+      }
+      return response;
+    }
     const response = await this.create({
       programProgressId,
       userId,

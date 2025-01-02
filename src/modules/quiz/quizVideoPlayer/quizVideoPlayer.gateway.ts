@@ -65,7 +65,7 @@ export class QuizVideoPlayerGateway implements OnGatewayInit, OnGatewayConnectio
     });
     const quizId = await this.programProgressService.getCurrentQuizId(progress._id.toString());
     const quiz = await this.quizService.findOne(quizId);
-
+    /*
     //preload next video
     if (quiz.subVideoByOptions && quiz.subVideoByOptions.some((i) => i)) {
       // if subvideo
@@ -103,8 +103,8 @@ export class QuizVideoPlayerGateway implements OnGatewayInit, OnGatewayConnectio
             client.emit('preloadNextVideo', { videoId: nextQuiz.videoId });
           }
         }
-      }
-    } else if (quiz.videoDuration - payload.timestamp < 3) {
+      }*/
+    if (quiz.videoDuration - payload.timestamp < 3) {
       //no subvideo
       const program = await this.programService.findOne(progress.program);
       if (progress.currentQuizIndex + 1 < program.quizList.length) {
@@ -112,7 +112,6 @@ export class QuizVideoPlayerGateway implements OnGatewayInit, OnGatewayConnectio
         client.emit('preloadNextVideo', { videoId: nextQuiz.videoId });
       }
     }
-
     console.log(progress.isSubmittingQuestion, quiz.questionTriggerTime, payload.timestamp);
     if (progress.isSubmittingQuestion) {
       //start and stop submitting question
@@ -141,6 +140,7 @@ export class QuizVideoPlayerGateway implements OnGatewayInit, OnGatewayConnectio
     const progress = await this.programProgressService.findOne(progressId);
     const program = await this.programService.findOne(progress.program);
     const quiz = await this.quizService.findOne(progress.currentQuiz.toString());
+    /*
     if (quiz?.subVideoByOptions && quiz.subVideoByOptions.filter((item) => item !== null).length > 0) {
       const questionResponses = await this.questionResponseService.findByProgramAndQuizId(
         progressId,
@@ -174,7 +174,7 @@ export class QuizVideoPlayerGateway implements OnGatewayInit, OnGatewayConnectio
         await this.quizHostService.progressUpdateCue(progress._id.toString());
         return;
       }
-    }
+    }*/
     console.log('c');
     if (progress.currentQuizIndex + 1 >= program.quizList.length) {
       client.emit('programEnd');

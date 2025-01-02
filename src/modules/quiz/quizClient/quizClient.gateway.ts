@@ -84,7 +84,6 @@ export class QuizClientGateway implements OnGatewayInit, OnGatewayConnection, On
     const programProgress = await this.programProgressService.findOne(programPgId);
     const quizId = await this.programProgressService.getCurrentQuizId(programPgId);
     if (quizId.toString() === payload.quizId && programProgress.isSubmittingQuestion) {
-      console.log(payload.answer);
       await this.questionResponseService.submitResponse(programPgId, user._id.toString(), quizId, payload.answer);
     }
     await this.quizHostService.progressUpdateCue(programPgId);
