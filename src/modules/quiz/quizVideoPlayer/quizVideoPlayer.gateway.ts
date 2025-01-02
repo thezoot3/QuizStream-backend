@@ -132,6 +132,7 @@ export class QuizVideoPlayerGateway implements OnGatewayInit, OnGatewayConnectio
 
       console.log(sortedAnswers);
       if (progress.isOnSubVideo && progress.currentSubVideo + 1 < quiz.subVideoByOptions.length) {
+        console.log('a');
         const subVideo = quiz.subVideoByOptions[sortedAnswers[progress.currentSubVideo + 1]];
         await this.startVideo(payload.programProgressId, subVideo.videoId);
         await this.programProgressService.update(progress._id.toString(), {
@@ -140,12 +141,14 @@ export class QuizVideoPlayerGateway implements OnGatewayInit, OnGatewayConnectio
         await this.quizHostService.progressUpdateCue(progress._id.toString());
         return;
       } else if (!progress.isOnSubVideo) {
+        console.log('b');
         await this.startVideo(payload.programProgressId, quiz.subVideoByOptions[sortedAnswers[0]].videoId);
         await this.programProgressService.update(progress._id.toString(), { currentSubVideo: 0, isOnSubVideo: true });
         await this.quizHostService.progressUpdateCue(progress._id.toString());
         return;
       }
     }
+    console.log('c');
     if (progress.currentQuizIndex + 1 >= program.quizList.length) {
       client.emit('programEnd');
       await this.programProgressService.update(progressId, { isEnd: true, isSubmittingQuestion: false });
