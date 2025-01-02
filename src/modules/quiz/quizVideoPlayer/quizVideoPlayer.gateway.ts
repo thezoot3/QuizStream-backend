@@ -40,7 +40,7 @@ export class QuizVideoPlayerGateway implements OnGatewayInit, OnGatewayConnectio
   handleConnection(client: Socket) {
     this.logger.log(`Client connected: ${client.id}`);
   }
-
+  currentVideo;
   async handleDisconnect(client: Socket) {
     await this.setVideoPlayerSocketId(null, client.id);
   }
@@ -127,7 +127,14 @@ export class QuizVideoPlayerGateway implements OnGatewayInit, OnGatewayConnectio
       const countByAnswer = new Array(quiz.options.length).fill(0).map((_, i) => {
         return questionResponses.filter((j) => j.submittedAnswer === i).length;
       });
-      const sortedAnswers = countByAnswer.map((_, i) => i).sort((a, b) => countByAnswer[b] - countByAnswer[a]);
+      let sortedAnswers = countByAnswer.map((_, i) => i).sort((a, b) => countByAnswer[b] - countByAnswer[a]);
+      if (questionResponses.length === 0) {
+        const arr = Array.from({ length: quiz.options.length });
+        arr.map((_, i) => {
+          return i;
+        });
+        sortedAnswers = arr as number[];
+      }
       if (progress.isOnSubVideo && progress.currentSubVideo + 1 < quiz.subVideoByOptions.length) {
         const subVideo = quiz.subVideoByOptions[sortedAnswers[progress.currentSubVideo + 1]];
         await this.startVideo(payload.programProgressId, subVideo.videoId);
