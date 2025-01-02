@@ -144,6 +144,7 @@ export class QuizHostGateway {
   }
 
   async progressUpdateCue(programProgressId: string) {
+    console.log(1, programProgressId);
     return this.server.to(programProgressId).emit('progressUpdateCue');
   }
 }
