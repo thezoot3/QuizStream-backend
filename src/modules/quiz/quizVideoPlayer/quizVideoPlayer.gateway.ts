@@ -73,7 +73,21 @@ export class QuizVideoPlayerGateway implements OnGatewayInit, OnGatewayConnectio
       if (quiz.subVideoByOptions[progress.currentSubVideo].duration - payload.timestamp < 3) {
         if (progress.currentSubVideo + 1 < quiz.subVideoByOptions.length) {
           //send next Sub Video Preload
-          client.emit('preloadNextVideo', { videoId: quiz.subVideoByOptions[progress.currentSubVideo + 1].videoId });
+          const questionResponses = await this.questionResponseService.findByProgramAndQuizId(
+            progress._id.toString(),
+            quiz._id.toString()
+          );
+          const countByAnswer = new Array(quiz.options.length).fill(0).map((_, i) => {
+            return questionResponses.filter((j) => j.submittedAnswer === i).length;
+          });
+          const sortedAnswers = countByAnswer.map((_, i) => i).sort((a, b) => countByAnswer[b] - countByAnswer[a]);
+          if (!progress.isOnSubVideo) {
+            client.emit('preloadNextVideo', { videoId: quiz.subVideoByOptions[sortedAnswers[0]].videoId });
+          } else {
+            client.emit('preloadNextVideo', {
+              videoId: quiz.subVideoByOptions[sortedAnswers[progress.currentSubVideo + 1]].videoId
+            });
+          }
         } else {
           //send next Quiz Main Video Preload
           const program = await this.programService.findOne(progress.program);
