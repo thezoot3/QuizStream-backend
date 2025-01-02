@@ -53,7 +53,11 @@ export class QuizClientGateway implements OnGatewayInit, OnGatewayConnection, On
     this.logger.log(`Client ${client.id} joined with nickname ${payload.nickname}`);
     if (payload.userId) {
       const exist = await this.userService.findOne(payload.userId);
-      await this.userService.update(exist._id.toString(), { socketId: client.id });
+      await this.userService.update(exist._id.toString(), {
+        socketId: client.id,
+        earnedPoints: 0,
+        joinedProgram: payload.programProgressId
+      });
       await this.programProgressService.addJoinedUser(payload.programProgressId, exist._id.toString());
       await this.quizHostService.progressUpdateCue(payload.programProgressId);
       client.join(payload.programProgressId);
